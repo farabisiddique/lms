@@ -47,7 +47,7 @@ if (isset($_COOKIE['rememberMe'])) {
     <title>Library Management System</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="AdminLTE v4 | Dashboard" />
+    <meta name="title" content="LMS | Dashboard" />
     
     <!--begin::Fonts-->
     <link

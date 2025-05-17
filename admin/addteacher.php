@@ -63,7 +63,7 @@ if (isset($_COOKIE['rememberMe'])) {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Library Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="AdminLTE v4 | Dashboard" />
+    <meta name="title" content="LMS | Dashboard" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"

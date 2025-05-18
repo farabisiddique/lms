@@ -3,6 +3,43 @@
 session_start();
 include '../db.php'; 
 
+// Initialize message variables
+$message = '';
+$message_type = '';
+
+// Handle student removal
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_student']) && isset($_POST['student_id'])) {
+  $student_id = (int)$_POST['student_id'];
+
+  // Check if the student has any unreturned books
+  $checkBooksQuery = $conn->prepare("SELECT * FROM issue_book 
+                                    WHERE user_id = ? AND return_date IS NULL");
+  $checkBooksQuery->bind_param("i", $student_id);
+  $checkBooksQuery->execute();
+  $bookResult = $checkBooksQuery->get_result();
+
+  if ($bookResult->num_rows > 0) {
+    $message = 'Cannot remove student. They have unreturned books.';
+    $message_type = 'danger';
+    $checkBooksQuery->close();
+  } else {
+    $checkBooksQuery->close();
+
+    // Proceed with deletion
+    $deleteQuery = $conn->prepare("DELETE FROM users WHERE id = ? AND user_type = 'student'");
+    $deleteQuery->bind_param("i", $student_id);
+    if ($deleteQuery->execute()) {
+      $message = 'Student removed successfully.';
+      $message_type = 'success';
+    } else {
+      $message = 'Failed to remove student.';
+      $message_type = 'danger';
+    }
+    $deleteQuery->close();
+  }
+}
+
+
 if (isset($_COOKIE['rememberMe'])) {
   $token = $_COOKIE['rememberMe'];
   $userid = $_SESSION['user_id'];
@@ -130,6 +167,7 @@ $designation = $userHere['designation'];
                           <th>Phone</th>
                           <th>Address</th>
                           <th>Department</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -160,6 +198,9 @@ $designation = $userHere['designation'];
                             //   echo "No photo";
                             // }
                             // echo "</td>";
+                            echo "<td>";
+                            echo "<button class='btn btn-danger btn-sm remove-student' data-id='" . htmlspecialchars($student['id']) . "' data-name='" . htmlspecialchars($student['name']) . "' data-bs-toggle='modal' data-bs-target='#confirmRemoveModal'>Remove</button>";
+                            echo "</td>";
                             echo "</tr>";
                           }
                         } else {
@@ -179,6 +220,27 @@ $designation = $userHere['designation'];
         </div>
         <!--end::App Content-->
       </main>
+      <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmRemoveModalLabel">Confirm Removal</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="">
+              <div class="modal-body">
+                Are you sure you want to remove <strong id="studentName"></strong>? This action can only proceed if the student has no unreturned books.
+                <input type="hidden" name="student_id" id="studentId" value="">
+                <input type="hidden" name="remove_student" value="1">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Remove</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
       <!--end::App Main-->
       <?php include './footer.php'; ?>
     </div>
@@ -224,6 +286,17 @@ $designation = $userHere['designation'];
           });
         }
       });
+    </script>
+    <script>
+      // Handle Remove Student Button Click
+        document.querySelectorAll('.remove-student').forEach(button => {
+          button.addEventListener('click', function () {
+            const studentId = this.getAttribute('data-id');
+            const studentName = this.getAttribute('data-name');
+            document.getElementById('studentName').textContent = studentName;
+            document.getElementById('studentId').value = studentId;
+          });
+        });
     </script>
     <!--end::OverlayScrollbars Configure-->
     <!-- OPTIONAL SCRIPTS -->

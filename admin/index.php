@@ -28,6 +28,37 @@ if (isset($_COOKIE['rememberMe'])) {
     
   }
 
+  $booksQuery = $conn->prepare("
+      SELECT 
+          SUM(books_quantity) AS total_quantity,
+          SUM(books_stock) AS total_stock,
+          SUM(books_quantity - books_stock) AS total_issued
+      FROM books
+  ");
+  $booksQuery->execute();
+  $booksResult = $booksQuery->get_result();
+  $booksData = $booksResult->fetch_assoc();
+  
+  $total_quantity = $booksData['total_quantity'] ?? 0;
+  $total_stock = $booksData['total_stock'] ?? 0;
+  $total_issued = $booksData['total_issued'] ?? 0;
+
+  $studentsQuery = $conn->prepare("
+      SELECT COUNT(*) AS total_students
+      FROM users
+      WHERE user_type = 'student'
+  ");
+  $studentsQuery->execute();
+  $studentsResult = $studentsQuery->get_result();
+  $studentsData = $studentsResult->fetch_assoc();
+  
+  $total_students = $studentsData['total_students'] ?? 0;
+
+  // Close prepared statements
+  $userQuery->close();
+  $booksQuery->close();
+  $studentsQuery->close();
+
 
 ?>
 <!doctype html>
@@ -121,7 +152,7 @@ if (isset($_COOKIE['rememberMe'])) {
                 <!--begin::Small Box Widget 1-->
                 <div class="small-box text-bg-primary">
                   <div class="inner">
-                    <h3>150</h3>
+                    <h3><?php echo $total_quantity; ?></h3>
                     <p>Books</p>
                   </div>
                   <svg
@@ -135,12 +166,7 @@ if (isset($_COOKIE['rememberMe'])) {
                       d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
                     ></path>
                   </svg>
-                  <a
-                    href="./displaybooks.php"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  
                 </div>
                 <!--end::Small Box Widget 1-->
               </div>
@@ -149,7 +175,7 @@ if (isset($_COOKIE['rememberMe'])) {
                 <!--begin::Small Box Widget 2-->
                 <div class="small-box text-bg-success">
                   <div class="inner">
-                    <h3>53</h3>
+                    <h3><?php echo $total_issued; ?></h3>
                     <p>Issued</p>
                   </div>
                   <svg
@@ -163,12 +189,7 @@ if (isset($_COOKIE['rememberMe'])) {
                       d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z"
                     ></path>
                   </svg>
-                  <a
-                    href="./returnbooks.php"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                 
                 </div>
                 <!--end::Small Box Widget 2-->
               </div>
@@ -177,7 +198,7 @@ if (isset($_COOKIE['rememberMe'])) {
                 <!--begin::Small Box Widget 3-->
                 <div class="small-box text-bg-warning">
                   <div class="inner">
-                    <h3>44</h3>
+                    <h3><?php echo $total_stock; ?></h3>
                     <p>In Stock</p>
                   </div>
                   <svg
@@ -191,12 +212,7 @@ if (isset($_COOKIE['rememberMe'])) {
                       d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
                     ></path>
                   </svg>
-                  <a
-                    href="./displaybooks.php"
-                    class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  
                 </div>
                 <!--end::Small Box Widget 3-->
               </div>
@@ -205,7 +221,7 @@ if (isset($_COOKIE['rememberMe'])) {
                 <!--begin::Small Box Widget 4-->
                 <div class="small-box text-bg-danger">
                   <div class="inner">
-                    <h3>65</h3>
+                    <h3><?php echo $total_students; ?></h3>
                     <p>Students</p>
                   </div>
                   <svg
@@ -226,12 +242,7 @@ if (isset($_COOKIE['rememberMe'])) {
                       d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
                     ></path>
                   </svg>
-                  <a
-                    href="./stdinfo.php"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  
                 </div>
                 <!--end::Small Box Widget 4-->
               </div>

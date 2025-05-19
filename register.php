@@ -3,7 +3,7 @@ session_start();
 include './db.php'; 
 
 // Redirect if already logged in
-if (isset($_COOKIE['rememberMe'])) {
+if (isset($_SESSION['user_id'])) {
   header("Location: admin/index.php");
   exit;
 }

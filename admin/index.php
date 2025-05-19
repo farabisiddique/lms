@@ -3,8 +3,8 @@
 session_start();
 include '../db.php'; 
 
-if (isset($_COOKIE['rememberMe'])) {
-  $token = $_COOKIE['rememberMe'];
+if (isset($_SESSION['user_id'])) {
+  
   
   $userid = $_SESSION['user_id']; 
 
@@ -21,10 +21,6 @@ if (isset($_COOKIE['rememberMe'])) {
     $user_type = $userHere['user_type'];
     $designation = $userHere['designation'];
     $photo = $userHere['photo'];
-
-    
-    
-
     
   }
 
@@ -42,6 +38,8 @@ if (isset($_COOKIE['rememberMe'])) {
   $total_quantity = $booksData['total_quantity'] ?? 0;
   $total_stock = $booksData['total_stock'] ?? 0;
   $total_issued = $booksData['total_issued'] ?? 0;
+
+ 
 
   $studentsQuery = $conn->prepare("
       SELECT COUNT(*) AS total_students

@@ -40,6 +40,12 @@
                   <p>Profile</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="./displaybooks.php" class="nav-link">
+                  <i class="nav-icon bi bi-card-list"></i>
+                  <p>All Books</p>
+                </a>
+              </li>
               <?php 
                 if($user_type == 'staff') {
               ?>
@@ -55,6 +61,7 @@
                   <p>All Teacher Information</p>
                 </a>
               </li>
+              
               <li class="nav-item menu-open">
                 <a href="#" class="nav-link ">
                   <i class="nav-icon bi bi-book"></i>
@@ -70,12 +77,7 @@
                       <p>Add Books</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="./displaybooks.php" class="nav-link">
-                      <i class="nav-icon bi bi-card-list"></i>
-                      <p>Display Books</p>
-                    </a>
-                  </li>
+                  
                   <li class="nav-item">
                     <a href="./issuebooks.php" class="nav-link">
                       <i class="nav-icon bi bi-box-arrow-in-up-right"></i>
@@ -118,6 +120,17 @@
                     </a>
                   </li>
                 </ul>
+              </li>
+              <?php
+                }
+                if($user_type == 'student' || $user_type == 'teacher') {
+
+              ?>
+              <li class="nav-item">
+                <a href="./viewissued.php" class="nav-link">
+                  <i class="nav-icon bi bi-person"></i>
+                  <p>View Issued Books</p>
+                </a>
               </li>
               <?php
                 }

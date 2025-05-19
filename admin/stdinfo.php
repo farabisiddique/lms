@@ -40,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_student']) && 
 }
 
 
-if (isset($_COOKIE['rememberMe'])) {
-  $token = $_COOKIE['rememberMe'];
+if (isset($_SESSION['user_id'])) {
+  
   $userid = $_SESSION['user_id'];
   
   $userid = $_SESSION['user_id']; 
@@ -171,7 +171,7 @@ $designation = $userHere['designation'];
                         </tr>
                       </thead>
                       <tbody>
-                        <?php
+                        <?php 
                         // Query to fetch students where user_type is 'student'
                         $studentQuery = $conn->prepare("SELECT * 
                                                       FROM users 

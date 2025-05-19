@@ -3,8 +3,8 @@
 session_start();
 include '../db.php'; 
 
-if (isset($_COOKIE['rememberMe'])) {
-  $token = $_COOKIE['rememberMe'];
+if (isset($_SESSION['user_id'])) {
+  
   $userid = $_SESSION['user_id'];
   
   $userid = $_SESSION['user_id']; 

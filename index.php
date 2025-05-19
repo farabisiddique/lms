@@ -2,7 +2,10 @@
 session_start();
 include './db.php'; 
 
-if (isset($_COOKIE['rememberMe'])) {
+// var_dump($_COOKIE['rememberMe']);
+// die();
+
+if (isset($_SESSION['user_id'])) {
   header("Location: admin/index.php");
 }
 ?>

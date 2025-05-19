@@ -28,44 +28,6 @@ if (isset($_SESSION['user_id'])) {
   }
 
 
-  // Handle form submission
-        $message = '';
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = $_POST['name'];
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
-            $address = $_POST['address'];
-            $dept = $_POST['dept'];
-            
-            // Handle photo upload
-            $photo_path = '';
-            if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-                $upload_dir = 'upload/';
-                $photo_name = time() . '_' . basename($_FILES['photo']['name']);
-                $photo_path = $upload_dir . $photo_name;
-                move_uploaded_file($_FILES['photo']['tmp_name'], $photo_path);
-            }
-            
-            // Generate unique ID
-            $lastUserQuery = $conn->query("SELECT MAX(id) as max_id FROM users");
-            $lastUser = $lastUserQuery->fetch_assoc();
-            $new_id = $lastUser['max_id'] + 1;
-            $uniqueid = '12000' . $new_id;
-            
-            // Insert student
-            $insertQuery = $conn->prepare("INSERT INTO users (name, username, pass, email, user_type, phone, address, photo, dept, designation, uniqueid) VALUES (?, ?, ?, ?, 'student', ?, ?, ?, ?, 'Student', ?)");
-            $insertQuery->bind_param("sssssssss", $name, $username, $password, $email, $phone, $address, $photo_path, $dept, $uniqueid);
-            
-            if ($insertQuery->execute()) {
-                $message = "Student added successfully! Unique ID: $uniqueid";
-            } else {
-                $message = "Error adding student: " . $conn->error;
-            }
-        }
-
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -134,11 +96,11 @@ if (isset($_SESSION['user_id'])) {
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">Add Student</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">Books I Took</h3></div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Add Student</li>
+                  <li class="breadcrumb-item active" aria-current="page">Books I Took</li>
                 </ol>
               </div>
             </div>
@@ -149,58 +111,55 @@ if (isset($_SESSION['user_id'])) {
         <!--end::App Content Header-->
         <!--begin::App Content-->
         <div class="app-content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-8 offset-md-2">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Student Information</h3>
-                                </div>
-                                <div class="card-body">
-                                    <?php if ($message): ?>
-                                        <div class="alert alert-info"><?php echo $message; ?></div>
-                                    <?php endif; ?>
-                                    <form method="POST" enctype="multipart/form-data">
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label">Username</label>
-                                            <input type="text" class="form-control" id="username" name="username" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="password" class="form-label">Password</label>
-                                            <input type="password" class="form-control" id="password" name="password" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" name="email" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="phone" class="form-label">Phone</label>
-                                            <input type="text" class="form-control" id="phone" name="phone" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="address" class="form-label">Address</label>
-                                            <textarea class="form-control" id="address" name="address" required></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="dept" class="form-label">Department</label>
-                                            <input type="text" class="form-control" id="dept" name="dept" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="photo" class="form-label">Photo</label>
-                                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Add Student</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Issued Books So Far</h3>
+                  </div>
+                  <div class="card-body">
+                    
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Book Name</th>
+                          <th>Author</th>
+                          <th>Issue Date</th>
+                          <th>Last Date to Return</th>
+                        </tr>
+                      </thead>
+                      <tbody id="unreturnedBooks">
+                          <?php
+                          $query = $conn->prepare("
+                              SELECT b.books_name, b.books_author_name, u.name, u.uniqueid, u.designation, u.dept, ib.issue_date, ib.last_date_to_return, ib.issue_id as issue_id
+                              FROM issue_book ib
+                              JOIN books b ON ib.book_id = b.id
+                              JOIN users u ON ib.user_id = u.id
+                              WHERE ib.return_date IS NULL AND ib.user_id = ?
+                              ORDER BY ib.issue_date
+                          ");
+                          $query->bind_param("i", $userid);
+                          $query->execute();
+                          $result = $query->get_result();
+                          while ($row = $result->fetch_assoc()) {
+                              echo '<tr>';
+                              echo '<td>' . htmlspecialchars($row['books_name']) . '</td>';
+                              echo '<td>' . htmlspecialchars($row['books_author_name']) . '</td>';
+                              echo '<td>' . htmlspecialchars($row['issue_date']) . '</td>';
+                              echo '<td>' . htmlspecialchars($row['last_date_to_return']) . '</td>';
+                              echo '</tr>';
+                          }
+                          $query->close();
+                          ?>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
+        </div>
         <!--end::App Content-->
       </main>
       <!--end::App Main-->
@@ -228,6 +187,9 @@ if (isset($_SESSION['user_id'])) {
     ></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
     <script src="./dist/js/adminlte.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
     <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
     <script>
       const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
@@ -249,6 +211,8 @@ if (isset($_SESSION['user_id'])) {
         }
       });
     </script>
+
+   
     <!--end::OverlayScrollbars Configure-->
     <!-- OPTIONAL SCRIPTS -->
     <!-- sortablejs -->

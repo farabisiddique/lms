@@ -2,7 +2,7 @@
 include './db.php'; 
 
 function validateUser($username,$pass,$conn){
-  $query = "SELECT * FROM users WHERE username = ? AND pass = ? AND user_type = 'staff' LIMIT 1";
+  $query = "SELECT * FROM users WHERE username = ? AND pass = ? AND user_type = 'student' LIMIT 1";
   $stmt = $conn->prepare($query);
   $stmt->bind_param("ss", $username, $pass); 
   $stmt->execute();

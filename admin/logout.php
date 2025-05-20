@@ -3,6 +3,7 @@ session_start();
 
 // Assuming you have a database connection set up
 include './db.php';
+$type_of_user = $_GET['type'];
 
 $user_id = $_SESSION['user_id'] ?? null; // Get the user ID from the session
 
@@ -31,6 +32,11 @@ session_destroy();
 setcookie("rememberMe", "", time() - 3600, "/");
 
 // Redirect to the login page
-header("Location: ../index.php"); // Replace with your login page URL
+if($type_of_user == 'staff') {
+    $redirect_url = '../stafflogin.php';
+} else  {
+    $redirect_url = '../studentlogin.php';
+} 
+header("Location: $redirect_url");
 exit();
 ?>

@@ -72,7 +72,7 @@ if (isset($_SESSION['user_id'])) {
     <div class="login-container container-fluid container-md p-0 my-3">
       <div class="row g-0 h-100">
         <div class="col-md-6 bg-dark text-white p-4 p-md-5 d-flex flex-column justify-content-center">
-          <h2 class="mb-4">Login</h2>
+          <h2 class="mb-4">Student Login Portal</h2>
           <p class="mb-4">Student, Enter your account details</p>
           <form id="login-form" method="post">
             <div class="input-group mb-3">

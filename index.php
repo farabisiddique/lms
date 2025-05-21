@@ -1,6 +1,5 @@
 <?php
     include './db.php'; 
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -17,7 +16,6 @@
         padding-top: 70px;
       }
       .books-container {
-        /* max-width: 900px; */
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -43,6 +41,35 @@
         width: 50px;
         height: auto;
         object-fit: cover;
+      }
+      .carousel-item img {
+        height: 600px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .carousel-caption {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
+        padding: 15px;
+      }
+      .carousel-caption h3 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .carousel-caption p {
+        font-size: 1.2rem;
+      }
+      @media (max-width: 576px) {
+        .carousel-item img {
+          height: 250px;
+        }
+        .carousel-caption h3 {
+          font-size: 1.5rem;
+        }
+        .carousel-caption p {
+          font-size: 1rem;
+        }
       }
     </style>
   </head>
@@ -70,6 +97,41 @@
         </div>
       </div>
     </nav>
+    <div class="container-fluid container-md my-3">
+      <div id="libraryCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="./s1.jpg" class="d-block w-100" alt="Library Welcome">
+            <div class="carousel-caption d-none d-md-block">
+              <h3>Welcome to the Library</h3>
+              <p>Discover a world of knowledge at your fingertips.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="./s2.jpg" class="d-block w-100" alt="New Books">
+            <div class="carousel-caption d-none d-md-block">
+              <h3>Explore New Books</h3>
+              <p>Browse our latest collection of novels and textbooks.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="./s3.jpg" class="d-block w-100" alt="Reading Community">
+            <div class="carousel-caption d-none d-md-block">
+              <h3>Join Our Reading Community</h3>
+              <p>Connect with fellow book lovers and share your passion.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#libraryCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#libraryCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
     <div class="books-container container-fluid container-md p-0 my-3">
       <div class="row g-0 h-100">
         <div class="col-md-12 bg-dark text-white p-4 p-md-5 d-flex flex-column justify-content-center">
@@ -119,14 +181,11 @@
             </table>
           </div>
         </div>
-        
       </div>
     </div>
-
     <footer class="text-white text-center mt-4">
       <strong>Developed by Umme Aiman Mahima, Fahima Khanam Borsha, Anika Shormila.</strong>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   </body>

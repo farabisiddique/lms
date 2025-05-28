@@ -215,6 +215,9 @@ if (isset($_SESSION['user_id'])) {
                 <!--end::Small Box Widget 3-->
               </div>
               <!--end::Col-->
+              <?php 
+                if($user_type == 'staff') {
+              ?>
               <div class="col-lg-3 col-6">
                 <!--begin::Small Box Widget 4-->
                 <div class="small-box text-bg-danger">
@@ -244,6 +247,10 @@ if (isset($_SESSION['user_id'])) {
                 </div>
                 <!--end::Small Box Widget 4-->
               </div>
+              <?php 
+                } // End of user_type check
+              
+              ?>
               <!--end::Col-->
             </div>
             <!--end::Row-->
